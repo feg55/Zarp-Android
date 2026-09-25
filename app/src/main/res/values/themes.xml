@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="zarp_back">#FF0B0C10</color>
+    <color name="zarp_back">#FF0F1015</color>
     <color name="zarp_accent">#FFF48120</color>
 
     <style name="Theme.Zarp" parent="android:Theme.Material.NoActionBar">

@@ -6,15 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 /**
- * Colors of the desktop Zarp (Theme.cs). Background and panels are a step darker:
+ * Colors of the desktop Zarp (Theme.cs). Background and panels are half a step darker:
  * phone screens show dark grays brighter than a desktop monitor.
  */
 object Zc {
-    val Back = Color(0xFF0B0C10)
-    val Panel = Color(0xFF15171D)
-    val PanelHover = Color(0xFF1D2027)
-    val Border = Color(0xFF262A33)
-    val BorderHover = Color(0xFF363B47)
+    val Back = Color(0xFF0F1015)
+    val Panel = Color(0xFF181B21)
+    val PanelHover = Color(0xFF21252D)
+    val Border = Color(0xFF2A2E38)
+    val BorderHover = Color(0xFF3B404C)
 
     // not pure white: it hurts on a dark background
     val Text = Color(0xFFC4C8D0)
