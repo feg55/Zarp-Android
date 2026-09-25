@@ -25,15 +25,21 @@ class ResultsTest {
     }
 
     @Test
-    fun `rechecked failure is shown as not confirmed`() {
+    fun `errors are shown in the current language`() {
+        TestLang.english()
         assertEquals("not confirmed: timeout", TestResult("a", error = "timeout", rechecked = true).displayError)
+        val r = TestResult.failed("a", Msg("err.timeout", 15), 1).copy(rechecked = true)
+        assertEquals("not confirmed: no connection within 15 s", r.displayError)
+        L.setLanguage("ru")
+        assertEquals("не подтвердилась: нет подключения за 15 с", r.displayError)
+        L.setLanguage("en")
     }
 
     @Test
     fun `results survive a json round trip`() {
         val map = mapOf(
             "warp-q-google6" to TestResult("warp-q-google6", ok = true, confirmed = true, connectMs = 812, pingMs = 71, timestamp = 1_700_000_000_000),
-            "direct" to TestResult("direct", error = "no connection within 15 s", timestamp = 5),
+            "direct" to TestResult("direct", errorKey = "err.timeout", errorArgs = listOf("15"), timestamp = 5),
         )
         assertEquals(map, DataStoreZarpStore.decodeResults(DataStoreZarpStore.encodeResults(map)))
         assertEquals(emptyMap<String, TestResult>(), DataStoreZarpStore.decodeResults("{broken"))

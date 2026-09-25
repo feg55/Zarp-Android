@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.feg55.zarp.ZarpApp
 import io.github.feg55.zarp.core.AppSettings
+import io.github.feg55.zarp.core.L
 import io.github.feg55.zarp.core.Strategy
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,8 +46,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** null follows the system language. */
+    fun setLanguage(code: String?) = zarp.setLanguage(code)
+
     fun resetAccount() {
         zarp.account.reset()
-        log.write("WARP registration removed; a new device is registered on the next connect.")
+        log.write(L.t("log.accountReset"))
     }
 }

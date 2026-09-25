@@ -1,0 +1,159 @@
+# Zarp for Android UI strings: Chinese. Keys match en.txt.
+
+about.text = Zarp for Android {0}。GPL-3.0。\n基于 MASQUE 的 WARP：usque、quic-go。TUN：hev-socks5-tunnel。伪造数据包：zapret2。\nCloudflare 和 WARP 是 Cloudflare, Inc. 的商标。Zarp 与 Cloudflare 无关。
+
+btn.back = 返回
+btn.cancel = 取消
+btn.clear = 清空
+btn.clearResults = 清除结果
+btn.close = 关闭
+btn.copy = 复制
+btn.fullScan = 完整查找
+btn.newDevice = 新的 WARP 设备
+btn.quickScan = 快速查找
+btn.save = 保存
+btn.test = 检测
+btn.testSelected = 检测所选
+btn.use = 使用
+
+col.protocol = 协议
+
+detail.cancelled = 已取消
+detail.connectFailed = 连接失败
+detail.connectingTo = 正在连接：{0}
+detail.disconnected = 未连接
+detail.disconnecting = 正在断开...
+detail.error = 错误：{0}
+detail.foundButFailed = 找到了策略，但连接失败
+detail.noStrategy = 尚未选择策略
+detail.notFound = 未找到可用的策略
+detail.preparing = 正在准备...
+detail.rechecking = 复查 {0}/{1}：{2}
+detail.reconnecting = 连接已断开，正在重新连接...
+detail.registerFailed = 无法注册 WARP
+detail.strategy = 策略：{0}
+detail.testing = {0}/{1}：{2}
+detail.vpnFailed = VPN 未能启动：{0}
+detail.vpnRevoked = VPN 已被系统关闭
+
+err.noTraffic = WARP 已连接，但流量没有经过它
+err.notWarp = cdn-cgi/trace 显示 warp={0}：流量没有经过 WARP
+err.timeout = {0} 秒内未连接
+err.tos = 请先接受 Cloudflare WARP 服务条款
+err.unsupported = Android 上不支持：{0}
+
+hint.cancel = 按下按钮即可取消
+hint.connect = 按下即可连接。可在设置中更换策略 ⚙
+hint.disconnect = 按下即可断开连接
+hint.firstRun = 按下后，Zarp 会自动找到最快的策略并连接 WARP
+
+info.connect = 连接时间
+info.endpoint = 端点
+info.ms = {0} 毫秒
+info.ping = 延迟
+info.score = 评分
+
+lang.system = 跟随系统（{0}）
+
+log.accountReset = 已删除 WARP 注册。下次连接时会注册新设备。
+log.best = 最佳策略：{0}（连接 {1} 毫秒，延迟 {2} 毫秒）
+log.cancelled = 操作已取消。
+log.candidatesFailed = 候选策略未通过复查，可能只是偶然成功。请重新查找或增加等待时间。
+log.connectingWith = 正在使用策略连接：{0}
+log.customSkippedApp = 已跳过自定义策略（格式：名称 | h3/h2 | 参数）：{0}
+log.error = 错误：{0}
+log.fakes = {0}：{1} 个伪造数据包，{2} 字节 -> {3}
+log.fakesTtl = {0}：{1} 个伪造数据包，{2} 字节，ttl={3} -> {4}
+log.noneWorked = 没有可用的策略。请在设置中增加等待时间，或添加自定义策略。
+log.otherVpnActive = 注意：另一个 VPN 处于活动状态，WARP 流量会经过它。
+log.recheck = 待复查的候选策略：{0}
+log.recheckOk = ✔✔ {0}：已确认（连接 {1} 毫秒，延迟 {2} 毫秒）
+log.savedFailed = 已保存的策略“{0}”无效，正在尝试其他已验证的策略。
+log.searchFull = 完整查找：共 {0} 个策略
+log.searchQuick = 快速查找：共 {0} 个策略，找到 {1} 个可用策略后停止
+log.searchSelected = 检测所选策略：{0}
+log.started = Zarp 已启动：{0}
+log.testFail = ✘ {0}：{1}
+log.testOk = ✔ {0}：连接 {1} 毫秒，延迟 {2} 毫秒
+log.tryNext = “{0}”未能连接，正在尝试下一个。
+log.unsupported = “{0}”在 Android 上不支持：{1}
+log.verifiedFailed = 已验证的策略都无效，重新查找。
+log.vpnAdvice = 请关闭其他 VPN，否则 WARP 可能无法连接，策略也会选错。
+log.vpnPermission = 未授予 VPN 权限。
+log.warpConnected = WARP 已连接，用时 {0} 毫秒（延迟 {1} 毫秒，{2}）。
+log.warpNotConnected = WARP 未能连接。
+log.warpNotConnectedReason = WARP 未能连接：{0}
+log.warpRegisterFailed = WARP 注册失败：{0}
+log.warpRegistered = WARP 注册完成。
+log.warpRegistering = WARP 未注册，正在注册...
+
+main.languageTip = 语言
+main.logHide = 日志 ▴
+main.logShow = 日志 ▾
+main.settingsTip = 设置与策略
+main.subtitle = 基于 MASQUE 的 Cloudflare WARP
+
+notif.channel = VPN 连接
+notif.title = 已连接到 WARP
+
+opt.autoConnect = 启动 Zarp 时自动连接
+opt.deviceOff = WARP 设备：尚未注册
+opt.deviceOn = WARP 设备：已注册
+opt.dns = DNS 服务器（IP，用逗号分隔）
+opt.ipv6 = 隧道内启用 IPv6
+opt.isolate = 隔离检测（每次使用新端点）
+opt.stopAfter = 快速查找：找到几个\n可用策略后停止
+opt.timeout = 连接等待时间（秒）
+
+result.applyFailed = 应用时连接失败
+result.endpoint = 端点：{0}
+result.notConfirmed = 未确认：{0}
+result.notTested = 未检测
+result.score = 评分：{0}（连接 + 4 × 延迟）
+result.tested = 检测时间：{0}
+result.times = {0} 毫秒，延迟 {1} 毫秒
+result.unsupported = Android 上不支持
+result.works1 = 可用（1 次检测）
+result.works2 = 可用 ✔✔
+
+settings.about = 关于
+settings.caption = 设置
+settings.connection = 连接
+settings.custom = 自定义策略
+settings.data = 数据
+settings.explain = 点击策略即可用它连接或检测它。✔✔ 已通过两次独立检测。
+settings.options = 选项
+settings.scanning = 搜索
+settings.strategy = 策略
+
+status.connected = 已连接
+status.connecting = 正在连接...
+status.disconnected = 未连接
+status.disconnecting = 正在断开...
+status.error = 错误
+status.preparing = 正在准备...
+status.searching = 正在查找策略
+
+strategy.direct = 直连（不做绕过）
+strategy.directH2 = 通过 HTTP/2 直连（不做绕过）
+
+tab.home = 主页
+tab.log = 日志
+tab.settings = 设置
+tab.strategies = 策略
+
+tip.fullScan = 检测全部 {0} 个策略。耗时更长，但不会遗漏
+tip.quickScan = 找到 {0} 个可用策略后停止（可在选项中设置）
+
+tos.accept = 接受
+tos.text = Zarp 会为你注册一个免费的 Cloudflare WARP 设备，并通过 MASQUE 连接到它。继续即表示你接受 Cloudflare WARP 服务条款：\nhttps://www.cloudflare.com/application/terms/\n\nZarp 是独立项目，与 Cloudflare 无关。
+tos.title = Cloudflare WARP
+
+tray.cancel = 取消
+tray.connect = 连接
+tray.disconnect = 断开连接
+
+unsup.badsum = badsum 需要原始套接字（root）：内核总是写入正确的 UDP 校验和
+unsup.raw = {0} 需要原始套接字（root）
+unsup.syntax = 无法使用这些参数：{0}
+unsup.wireguard = Android 版尚未实现 WireGuard

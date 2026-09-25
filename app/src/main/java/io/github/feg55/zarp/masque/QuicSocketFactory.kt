@@ -1,5 +1,6 @@
 package io.github.feg55.zarp.masque
 
+import io.github.feg55.zarp.core.L
 import io.github.feg55.zarp.core.LogBus
 import io.github.feg55.zarp.core.Strategy
 import io.github.feg55.zarp.strategy.AndroidUdpSocket
@@ -36,8 +37,12 @@ class QuicSocketFactory(
             val counting = CountingSocket(socket)
             runBlocking { zarpStrategy.beforeHandshake(counting, InetSocketAddress(addr, port.toInt())) }
             if (counting.packets > 0) {
-                log.write("  ${strategy.name}: ${counting.packets} fake packet(s), ${counting.bytes} bytes" +
-                    (counting.lowTtl?.let { ", ttl=$it" } ?: "") + " -> $host:$port")
+                val to = "$host:$port"
+                val ttl = counting.lowTtl
+                log.write(
+                    "  " + if (ttl == null) L.t("log.fakes", strategy.name, counting.packets, counting.bytes, to)
+                    else L.t("log.fakesTtl", strategy.name, counting.packets, counting.bytes, ttl, to)
+                )
             }
             return socket.detach().toLong()
         } catch (e: Exception) {

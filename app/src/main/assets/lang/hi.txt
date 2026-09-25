@@ -1,0 +1,159 @@
+# Zarp for Android UI strings: Hindi. Keys match en.txt.
+
+about.text = Android के लिए Zarp {0}। GPL-3.0।\nMASQUE पर WARP: usque, quic-go। TUN: hev-socks5-tunnel। नकली पैकेट: zapret2।\nCloudflare और WARP, Cloudflare, Inc. के ट्रेडमार्क हैं। Zarp का Cloudflare से कोई संबंध नहीं है।
+
+btn.back = वापस
+btn.cancel = रद्द करें
+btn.clear = साफ़ करें
+btn.clearResults = नतीजे मिटाएँ
+btn.close = बंद करें
+btn.copy = कॉपी करें
+btn.fullScan = पूरी खोज
+btn.newDevice = नया WARP डिवाइस
+btn.quickScan = तेज़ खोज
+btn.save = सहेजें
+btn.test = जाँचें
+btn.testSelected = चुनी हुई जाँचें
+btn.use = उपयोग करें
+
+col.protocol = प्रोटोकॉल
+
+detail.cancelled = रद्द किया गया
+detail.connectFailed = कनेक्ट नहीं हो सका
+detail.connectingTo = कनेक्ट हो रहा है: {0}
+detail.disconnected = डिस्कनेक्टेड
+detail.disconnecting = डिस्कनेक्ट हो रहा है...
+detail.error = त्रुटि: {0}
+detail.foundButFailed = रणनीतियाँ मिलीं, लेकिन कनेक्ट नहीं हो सका
+detail.noStrategy = अभी कोई रणनीति नहीं चुनी गई
+detail.notFound = काम करने वाली कोई रणनीति नहीं मिली
+detail.preparing = तैयारी हो रही है...
+detail.rechecking = दोबारा जाँच {0}/{1}: {2}
+detail.reconnecting = कनेक्शन टूट गया, फिर से कनेक्ट हो रहा है...
+detail.registerFailed = WARP रजिस्टर नहीं हो सका
+detail.strategy = रणनीति: {0}
+detail.testing = {0}/{1}: {2}
+detail.vpnFailed = VPN शुरू नहीं हुआ: {0}
+detail.vpnRevoked = सिस्टम ने VPN बंद कर दिया
+
+err.noTraffic = WARP कनेक्टेड है, लेकिन ट्रैफ़िक उससे होकर नहीं जा रहा
+err.notWarp = cdn-cgi/trace में warp={0} है: ट्रैफ़िक WARP से होकर नहीं जा रहा
+err.timeout = {0} सेकंड में कनेक्शन नहीं हुआ
+err.tos = पहले Cloudflare WARP की सेवा शर्तें स्वीकार करें
+err.unsupported = Android पर समर्थित नहीं: {0}
+
+hint.cancel = रद्द करने के लिए बटन दबाएँ
+hint.connect = कनेक्ट करने के लिए दबाएँ। रणनीति सेटिंग्स में बदली जा सकती है ⚙
+hint.disconnect = डिस्कनेक्ट करने के लिए दबाएँ
+hint.firstRun = दबाएँ, Zarp सबसे तेज़ रणनीति खोजकर WARP कनेक्ट कर देगा
+
+info.connect = कनेक्शन समय
+info.endpoint = एंडपॉइंट
+info.ms = {0} ms
+info.ping = पिंग
+info.score = स्कोर
+
+lang.system = सिस्टम की भाषा ({0})
+
+log.accountReset = WARP रजिस्ट्रेशन हटा दिया गया। अगले कनेक्शन पर नया डिवाइस रजिस्टर होगा।
+log.best = सबसे अच्छी रणनीति: {0} (कनेक्शन {1} ms, पिंग {2} ms)
+log.cancelled = कार्रवाई रद्द की गई।
+log.candidatesFailed = उम्मीदवार दोबारा जाँच में सफल नहीं हुए, शायद वे संयोग से चल गए थे। फिर से खोजें या इंतज़ार का समय बढ़ाएँ।
+log.connectingWith = इस रणनीति से कनेक्ट हो रहा है: {0}
+log.customSkippedApp = अपनी रणनीति छोड़ दी गई (फ़ॉर्मेट: नाम | h3/h2 | आर्ग्युमेंट): {0}
+log.error = त्रुटि: {0}
+log.fakes = {0}: {1} नकली पैकेट, {2} बाइट -> {3}
+log.fakesTtl = {0}: {1} नकली पैकेट, {2} बाइट, ttl={3} -> {4}
+log.noneWorked = कोई रणनीति काम नहीं आई। सेटिंग्स में इंतज़ार का समय बढ़ाएँ या अपनी रणनीतियाँ जोड़ें।
+log.otherVpnActive = ध्यान दें: एक और VPN चालू है, WARP का ट्रैफ़िक उसी से होकर जा रहा है।
+log.recheck = दोबारा जाँच के लिए उम्मीदवार: {0}
+log.recheckOk = ✔✔ {0}: पुष्टि हुई (कनेक्शन {1} ms, पिंग {2} ms)
+log.savedFailed = सहेजी गई रणनीति "{0}" काम नहीं आई, दूसरी जाँची हुई रणनीतियाँ आज़माई जा रही हैं।
+log.searchFull = पूरी खोज: {0} रणनीतियाँ
+log.searchQuick = तेज़ खोज: {0} रणनीतियाँ, {1} काम करने वाली मिलने पर रुकें
+log.searchSelected = चुनी हुई रणनीतियों की जाँच: {0}
+log.started = Zarp शुरू हुआ: {0}
+log.testFail = ✘ {0}: {1}
+log.testOk = ✔ {0}: कनेक्शन {1} ms, पिंग {2} ms
+log.tryNext = "{0}" कनेक्ट नहीं हुई, अगली आज़माई जा रही है।
+log.unsupported = "{0}" Android पर समर्थित नहीं: {1}
+log.verifiedFailed = जाँची हुई रणनीतियाँ काम नहीं आईं, फिर से खोज हो रही है।
+log.vpnAdvice = दूसरा VPN बंद करें, वरना WARP शायद कनेक्ट न हो और रणनीति गलत चुनी जाए।
+log.vpnPermission = VPN की अनुमति नहीं मिली।
+log.warpConnected = WARP {0} ms में कनेक्ट हुआ (पिंग {1} ms, {2})।
+log.warpNotConnected = WARP कनेक्ट नहीं हुआ।
+log.warpNotConnectedReason = WARP कनेक्ट नहीं हुआ: {0}
+log.warpRegisterFailed = WARP रजिस्टर करने में त्रुटि: {0}
+log.warpRegistered = WARP रजिस्टर हो गया।
+log.warpRegistering = WARP रजिस्टर नहीं है, रजिस्टर किया जा रहा है...
+
+main.languageTip = भाषा
+main.logHide = लॉग ▴
+main.logShow = लॉग ▾
+main.settingsTip = सेटिंग्स और रणनीति
+main.subtitle = MASQUE के ज़रिए Cloudflare WARP
+
+notif.channel = VPN कनेक्शन
+notif.title = WARP से कनेक्टेड
+
+opt.autoConnect = Zarp शुरू होते ही कनेक्ट करें
+opt.deviceOff = WARP डिवाइस: अभी रजिस्टर नहीं हुआ
+opt.deviceOn = WARP डिवाइस: रजिस्टर्ड
+opt.dns = DNS सर्वर (कॉमा से अलग IP)
+opt.ipv6 = टनल के अंदर IPv6
+opt.isolate = जाँचें अलग रखें (हर बार नया एंडपॉइंट)
+opt.stopAfter = तेज़ खोज: कितनी काम\nकरने वाली खोजें
+opt.timeout = कनेक्शन का इंतज़ार, सेकंड
+
+result.applyFailed = लागू करने पर कनेक्ट नहीं हुई
+result.endpoint = एंडपॉइंट: {0}
+result.notConfirmed = पुष्टि नहीं हुई: {0}
+result.notTested = जाँची नहीं गई
+result.score = स्कोर: {0} (कनेक्शन + 4 × पिंग)
+result.tested = जाँचा गया: {0}
+result.times = {0} ms, पिंग {1} ms
+result.unsupported = Android पर समर्थित नहीं
+result.works1 = काम करती है (1 जाँच)
+result.works2 = काम करती है ✔✔
+
+settings.about = जानकारी
+settings.caption = सेटिंग्स
+settings.connection = कनेक्शन
+settings.custom = अपनी रणनीतियाँ
+settings.data = डेटा
+settings.explain = रणनीति पर टैप करें, उससे कनेक्ट करने या उसे जाँचने के लिए। ✔✔ दो स्वतंत्र जाँचों में सफल।
+settings.options = विकल्प
+settings.scanning = खोज
+settings.strategy = रणनीति
+
+status.connected = कनेक्टेड
+status.connecting = कनेक्ट हो रहा है...
+status.disconnected = डिस्कनेक्टेड
+status.disconnecting = डिस्कनेक्ट हो रहा है...
+status.error = त्रुटि
+status.preparing = तैयारी हो रही है...
+status.searching = रणनीति खोजी जा रही है
+
+strategy.direct = सीधा (बिना बायपास)
+strategy.directH2 = HTTP/2 से सीधा (बिना बायपास)
+
+tab.home = होम
+tab.log = लॉग
+tab.settings = सेटिंग्स
+tab.strategies = रणनीतियाँ
+
+tip.fullScan = सभी {0} रणनीतियाँ जाँचती है। ज़्यादा समय लगता है, पर कोई नहीं छूटती
+tip.quickScan = {0} काम करने वाली रणनीतियाँ मिलते ही रुक जाती है (विकल्पों में बदलें)
+
+tos.accept = स्वीकार करें
+tos.text = Zarp आपके लिए एक मुफ़्त Cloudflare WARP डिवाइस रजिस्टर करता है और MASQUE के ज़रिए उससे कनेक्ट होता है। आगे बढ़कर आप Cloudflare WARP की सेवा शर्तें स्वीकार करते हैं:\nhttps://www.cloudflare.com/application/terms/\n\nZarp एक स्वतंत्र प्रोजेक्ट है, Cloudflare से इसका कोई संबंध नहीं है।
+tos.title = Cloudflare WARP
+
+tray.cancel = रद्द करें
+tray.connect = कनेक्ट करें
+tray.disconnect = डिस्कनेक्ट करें
+
+unsup.badsum = badsum के लिए raw सॉकेट (root) चाहिए: कर्नेल हमेशा सही UDP चेकसम लिखता है
+unsup.raw = {0} के लिए raw सॉकेट (root) चाहिए
+unsup.syntax = आर्ग्युमेंट इस्तेमाल नहीं हो सकते: {0}
+unsup.wireguard = Android पर WireGuard अभी उपलब्ध नहीं है

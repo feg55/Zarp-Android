@@ -1,113 +1,108 @@
 # Zarp for Android
 
-Android port of [Zarp](https://github.com/feg55/Zarp). It finds a desync strategy that lets Cloudflare WARP connect on a network that blocks it, confirms that the strategy really works, remembers the best one and connects with it.
+[![Android](https://github.com/feg55/Zarp-Android/actions/workflows/android.yml/badge.svg)](https://github.com/feg55/Zarp-Android/actions/workflows/android.yml)
+[![Release](https://img.shields.io/github/v/release/feg55/Zarp-Android)](https://github.com/feg55/Zarp-Android/releases/latest)
+[![License: GPL-3.0](https://img.shields.io/github/license/feg55/Zarp-Android)](LICENSE)
 
-The Windows version drives the official WARP client and zapret2 (`winws2` + WinDivert). Android has neither, so this port:
+One-tap Cloudflare WARP for networks that block it. Android version of [Zarp](https://github.com/feg55/Zarp): it finds a strategy that gets the WARP handshake through DPI, checks it twice, remembers it and connects.
 
-- speaks WARP itself over **MASQUE** (HTTP/3 primary, HTTP/2 secondary), using [usque](https://github.com/Diniboy1123/usque) as the MASQUE core;
-- performs the Zarp strategies **inside the socket that carries the MASQUE/QUIC connection**, instead of intercepting packets.
+<img src="docs/screenshot.png" alt="Zarp for Android" width="300">
 
-WireGuard is planned only as a fallback and is not implemented yet. The WireGuard strategies are listed and marked unsupported.
+## Features
 
-## Architecture
+- **One button.** The first tap searches for the fastest working strategy, later taps connect right away.
+- **No WARP app needed.** Zarp talks to WARP itself over MASQUE (HTTP/3, with HTTP/2 as a fallback) and registers a free WARP device on first use.
+- **The same strategies as on Windows.** Fake QUIC Initials of google.com and vk.com are sent from the tunnel's own UDP socket right before the real handshake, so DPI sees them on the same connection.
+- **Honest testing.** Each test runs on a fresh WARP endpoint and every candidate is checked twice. A strategy passes only if `cdn-cgi/trace` reports `warp=on`.
+- **Self-healing.** If the saved strategy stops working, Zarp tries the other verified ones before searching again. After a network change it reconnects and applies the strategy again.
+- **No root.** A regular Android VPN. Strategies that need raw sockets are shown as unsupported instead of being faked.
+- **Your language.** English, Русский, Español, Português, 中文, हिन्दी, Français and Deutsch. Zarp follows the system language (English if it is not on the list), and the globe button switches it on the fly.
 
-```
-Apps
- -> Android VpnService (TUN)                      app/.../vpn/ZarpVpnService.kt
- -> hev-socks5-tunnel (JNI)                       app/src/main/jni/hev-socks5-tunnel
- -> SOCKS5 on 127.0.0.1                            core/zarpcore/tunnel.go
- -> WARP MASQUE core (usque, connect-ip, quic-go)  core/third_party/usque
- -> Cloudflare WARP
-```
+## Requirements
 
-Zarp excludes its own app from the VPN, so the core's MASQUE sockets never loop back into the TUN. They are also `protect()`-ed.
+- Android 8.0 or later (arm64, armv7 or x86_64)
 
-### How a strategy is applied
+## Usage
 
-Every QUIC dial asks Kotlin for its UDP socket (`SocketFactory.openUDP`, which is `QuicSocketFactory` on the Kotlin side). This happens on the first connect and again on every reconnect.
+1. Download the APK from [Releases](https://github.com/feg55/Zarp-Android/releases/latest) and install it.
+2. Tap the power button. Accept the WARP terms and the VPN request the first time.
+3. The first search takes about a minute. After that Zarp connects with the saved strategy.
 
-1. Kotlin creates a UDP socket (`AndroidUdpSocket`) and protects it.
-2. The WARP endpoint for this attempt is chosen.
-3. `ZarpStrategy.beforeHandshake(socket, endpoint)` sends the fake packets, for example six real QUIC Initials of `www.google.com` for *fake google ×6*.
-4. The same file descriptor is handed to the Go core. quic-go sends the real QUIC Initial through it, so the fakes and the real Initial share one 5-tuple.
-5. The MASQUE (CONNECT-IP) handshake follows.
+The Strategies tab shows every strategy with its result. Tap one to connect with it or test it again, or tick several and test them together. **Quick scan** stops after 3 working strategies (adjustable in Settings), **Full scan** tests all of them.
 
-For `ttl=4` strategies, the TTL (or IPv6 hop limit) is lowered only while the fakes are sent. It is reset to the system default before the socket is returned.
-
-The fake payloads are the real zapret2 blobs (`files/fake/*.bin`, MIT) in `app/src/main/assets/blobs`, never random bytes.
-
-### Zarp algorithm (port of `Engine.cs`)
-
-- **Quick Scan** tests strategies top to bottom and stops after N working ones (default 3). **Full Scan** tests all of them.
-- Each test opens its own tunnel on a **separate WARP endpoint**, rotating IPs 162.159.198.1/.2 and ports 443/500/1701/4500/4443/8443 as in `Warp.NextEndpoint`.
-- A test succeeds only if `https://www.cloudflare.com/cdn-cgi/trace`, fetched through that tunnel's SOCKS5 proxy, says `warp=on` or `warp=plus`. The result records the connect time and the ping (median of 3 requests after one warm-up).
-- Every working strategy gets an **independent re-check** on another endpoint. The confirmed result uses the slower connect time and the average ping.
-- Score = `connect_ms + 4 * ping_ms`. Confirmed results are saved in DataStore.
-- **Connect** tries the saved strategy first, then the other confirmed strategies in score order, and starts a Quick Scan if none of them works.
+> [!NOTE]
+> Turn off any other VPN before a search. Android runs one VPN at a time, and a scan through someone else's tunnel measures that tunnel, not your network.
 
 ## Strategies
 
-The last column is a Full Scan on 2026-09-25 on one real Russian home network (Wi-Fi, Huawei ANG-LX1, Android 10). "Confirmed" means the independent re-check also passed. Results on other networks will differ.
+| Strategy | Transport | Android |
+|---|---|---|
+| fake google ×3 / ×6 / ×10, fake vk ×6, fakes google + vk | MASQUE / HTTP3 | yes |
+| fake google / vk ttl=4 ×6 | MASQUE / HTTP3 | yes, TTL is lowered for the fakes only |
+| fake google badsum ×6 | MASQUE / HTTP3 | no, needs raw sockets |
+| split 1,midsld and disorder 1,midsld | MASQUE / HTTP2 | yes |
+| fake md5, seqovl, badseq, hostfakesplit | MASQUE / HTTP2 | no, needs raw sockets |
+| WireGuard strategies | WireGuard | not yet |
+| Direct (no desync) | HTTP3 and HTTP2 | yes, the control test |
 
-| Strategy | Transport | Android | Result on that network |
-|---|---|---|---|
-| WARP QUIC: fake google ×3 | HTTP/3 | supported | confirmed, 161 ms / ping 155 ms (best) |
-| WARP QUIC: fakes google + vk | HTTP/3 | supported | confirmed, 191 ms / 153 ms |
-| WARP QUIC: fake google ×10 | HTTP/3 | supported | confirmed, 277 ms / 191 ms |
-| WARP QUIC: fake vk ×6 | HTTP/3 | supported | confirmed, 286 ms / 200 ms |
-| WARP QUIC: fake google ×6 | HTTP/3 | supported | confirmed, 290 ms / 151 ms |
-| WARP QUIC: fake google/vk ttl=4 ×6 | HTTP/3 | supported (TTL lowered for fakes only) | timeout, same as direct |
-| WARP QUIC: fake google badsum ×6 | HTTP/3 | **unsupported**: a bad UDP checksum needs raw sockets (root) | not tested |
-| Direct | HTTP/3 | supported (control) | timeout: the QUIC handshake passes, then CONNECT-IP stalls |
-| Direct over HTTP/2 | HTTP/2 | supported (control) | confirmed, 135 ms / 157 ms |
-| WARP TLS: split 1,midsld / disorder 1,midsld | HTTP/2 | supported (ClientHello segmentation; disorder sends the first segment with TTL=1) | handshake passes, then no traffic |
-| WARP TLS: fake md5 / seqovl / badseq / hostfakesplit | HTTP/2 | **unsupported**: need raw sockets (root) | not tested |
-| WARP WireGuard: * | WireGuard | **unsupported**: WireGuard fallback not implemented yet | not tested |
+On one Russian home network the fake google and fake vk strategies connect in 150 to 300 ms, while a direct connection stalls right after the QUIC handshake. Results depend on the network, which is why Zarp tests instead of guessing.
 
-Over HTTP/2 only `162.159.198.2:443` presents the pinned endpoint key; `162.159.198.1:443` fails pinning. HTTP/2 tests therefore cannot rotate endpoints.
+Your own strategies go into Settings in the same format as the desktop `strategies.txt`:
 
-Custom strategies use Zarp's `strategies.txt` format (`Name | h3 | zapret args`) in Settings.
+```
+# name | transport (h3, h2) | zapret2 profile args
+My QUIC | h3 | --payload=quic_initial --lua-desync=fake:blob=quic_google:repeats=8
+```
+
+## How it works
+
+```
+apps -> VpnService (TUN) -> hev-socks5-tunnel -> SOCKS5 on 127.0.0.1 -> MASQUE core -> Cloudflare WARP
+```
+
+The MASQUE core is [usque](https://github.com/Diniboy1123/usque) built with gomobile. Before every QUIC dial the core asks the app for a UDP socket. The app creates it, sends the strategy's fake packets through it and hands the same socket back, and quic-go sends the real Initial from there. Zarp's own traffic is excluded from the VPN, so the tunnel never loops into itself.
+
+A search runs each strategy on its own tunnel and endpoint and fetches `cdn-cgi/trace` through it. Score is `connect time + 4 × ping`, the same as on Windows. The fake packets are the real captures from [zapret2](https://github.com/bol-van/zapret2) (`files/fake`).
+
+### Privacy
+
+Zarp has no telemetry and does not collect personal data. It connects only to:
+
+- `api.cloudflareclient.com`, once, to register a WARP device;
+- WARP MASQUE endpoints (`162.159.198.1`, `162.159.198.2`), which carry the tunnel;
+- `https://www.cloudflare.com/cdn-cgi/trace`, through the tunnel, to check WARP and measure latency.
+
+WARP is covered by the [Cloudflare WARP privacy policy](https://www.cloudflare.com/application/privacypolicy/).
 
 ## Building
 
-Requirements: JDK 17+, Go (see `core/go.mod`), Android SDK with platform `android-37.0`, build-tools 36.1.0 and NDK 29.0.14206865.
+Needs JDK 17+, Go (version in `core/go.mod`) and the Android SDK with platform `android-37.0`, build-tools 36.1.0 and NDK 29.0.14206865.
 
 ```sh
-git clone --recursive <this repo>
-./gradlew test lint assembleDebug
+git clone --recursive https://github.com/feg55/Zarp-Android
+cd Zarp-Android
+./gradlew test lint assembleDebug   # app/build/outputs/apk/debug/app-debug.apk
 ```
 
-`assembleDebug` first runs `buildGoCore`, which builds `core/` into `app/libs/zarpcore.aar` with gomobile (`scripts/build-core.sh` or `scripts/build-core.cmd`). hev-socks5-tunnel is built with ndk-build.
+The Go core is built into `app/libs/zarpcore.aar` by the `buildGoCore` task; its own tests run with `cd core && go test ./zarpcore`. If `dl.google.com` is blocked for you, add `zarp.googleMirror=https://maven.aliyun.com/repository/google` to `local.properties`.
 
-The APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
-
-If `dl.google.com` is unreachable from your network, add a Google Maven mirror to `local.properties`:
-
-```
-zarp.googleMirror=https://maven.aliyun.com/repository/google
-```
-
-Go core checks: `cd core && go vet ./zarpcore && go test ./zarpcore`.
-
-## Debug commands (debug builds only)
-
-Debug builds include a broadcast receiver that only the adb shell can reach. It runs the engine without the UI; the VPN permission must already be granted in the app:
+Debug builds install next to the release as "Zarp debug" and accept commands over adb, which is handy for testing strategies without tapping:
 
 ```sh
-adb shell am broadcast -a io.github.feg55.zarp.DEBUG -n io.github.feg55.zarp/.DebugCommandReceiver --es cmd "'test warp-q-google6,direct'"
-# cmd: quick | full | connect | disconnect | cancel | test <id,id> | use <id>
-adb logcat -s Zarp
+adb shell am broadcast -a io.github.feg55.zarp.DEBUG -n io.github.feg55.zarp.debug/io.github.feg55.zarp.DebugCommandReceiver --es cmd "'test warp-q-google6,direct'"
+# quick | full | connect | disconnect | cancel | test <id,id> | use <id>
 ```
+
+GitHub Actions builds every push. A `v*` tag builds a release APK signed with the key from the repository secrets and publishes it with its SHA-256.
+
+### Translations
+
+All strings live in [`app/src/main/assets/lang`](app/src/main/assets/lang), one `key = value` file per language with `en.txt` as the reference, in the same format as the desktop Zarp. Strings shared with the desktop app keep its keys and wording. The tests check that every language has the same keys and placeholders as English.
 
 ## License
 
-GPL-3.0 (see `LICENSE`). Third-party components are listed in `licenses/`:
+GPL-3.0, see [LICENSE](LICENSE). The Windows Zarp stays under MIT.
 
-- usque: MIT (vendored in `core/third_party/usque`; local additions are listed in `ZARP_PATCHES.md`)
-- hev-socks5-tunnel: MIT
-- zapret2 fake blobs: MIT
-- quic-go, connect-ip-go, wireguard-go netstack and gVisor: their respective licenses
+Bundled components: [usque](https://github.com/Diniboy1123/usque) (MIT, vendored in `core/third_party/usque`), [hev-socks5-tunnel](https://github.com/heiher/hev-socks5-tunnel) (MIT), fake packets from [zapret2](https://github.com/bol-van/zapret2) (MIT), plus quic-go, connect-ip-go, wireguard-go and gVisor under their own licenses. License texts are in [`licenses`](licenses).
 
-The Windows Zarp repository keeps its MIT license and is not modified by this project.
-
-Cloudflare and WARP are trademarks of Cloudflare, Inc. Zarp is an independent project, not affiliated with or endorsed by Cloudflare. Registration creates a free WARP device and requires accepting the Cloudflare WARP Terms of Service in the app.
+Cloudflare and WARP are trademarks of Cloudflare, Inc. Zarp is an independent project, not affiliated with or endorsed by Cloudflare.

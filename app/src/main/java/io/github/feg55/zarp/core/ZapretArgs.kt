@@ -38,8 +38,10 @@ data class FakeStep(
 data class DesyncPlan(
     val fakes: List<FakeStep> = emptyList(),
     val tcpDesync: String? = null,
-    val unsupportedReason: String? = null,
-)
+    val unsupported: Msg? = null,
+) {
+    val unsupportedReason: String? get() = unsupported?.toString()
+}
 
 /** Parser for the subset of zapret2 (winws2) profile syntax that Zarp strategies use. */
 object ZapretArgs {
@@ -49,7 +51,7 @@ object ZapretArgs {
 
     fun parse(transport: Transport, args: String): DesyncPlan {
         if (transport == Transport.WireGuard) {
-            return DesyncPlan(unsupportedReason = "WireGuard transport is not implemented on Android yet")
+            return DesyncPlan(unsupported = Msg("unsup.wireguard"))
         }
         val tokens = args.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
         if (tokens.isEmpty()) return DesyncPlan()
@@ -62,38 +64,42 @@ object ZapretArgs {
                 "--payload" -> {
                     val want = if (transport == Transport.MasqueH3) QUIC_PAYLOAD else TLS_PAYLOAD
                     if (value.split(",").none { it == want }) {
-                        return unsupported("payload '$value' never matches the ${transport.title} handshake")
+                        return syntax("payload '$value' never matches the ${transport.title} handshake")
                     }
                 }
                 "--lua-desync" -> {
                     val parts = value.split(":")
                     val fn = parts[0]
-                    val params = parseParams(parts.drop(1)) ?: return unsupported("bad arguments in '$tok'")
+                    val params = parseParams(parts.drop(1)) ?: return syntax("bad arguments in '$tok'")
                     when {
                         transport == Transport.MasqueH3 && fn == "fake" -> {
-                            val step = parseFake(params) ?: return unsupported(fakeProblem(params))
+                            val step = parseFake(params) ?: return DesyncPlan(unsupported = fakeProblem(params))
                             fakes += step
                         }
                         transport == Transport.MasqueH2 && (fn == "multisplit" || fn == "multidisorder") -> {
-                            if (tcpDesync != null) return unsupported("only one TCP split per strategy is supported")
+                            if (tcpDesync != null) return syntax("only one TCP split per strategy is supported")
                             val extra = params.keys - "pos"
                             if (extra.isNotEmpty()) {
-                                return unsupported("$fn:${extra.joinToString(":")} needs raw sockets (root)")
+                                return raw("$fn:${extra.joinToString(":")}")
                             }
                             val pos = params["pos"] ?: "2" // zapret default
-                            if (!validPositions(pos)) return unsupported("bad split positions '$pos'")
+                            if (!validPositions(pos)) return syntax("bad split positions '$pos'")
                             tcpDesync = (if (fn == "multisplit") "split:" else "disorder:") + pos
                         }
-                        else -> return unsupported("'$fn' over ${transport.title} needs raw sockets (root) on Android")
+                        else -> return raw("$fn (${transport.title})")
                     }
                 }
-                else -> return unsupported("unknown option '$key'")
+                else -> return syntax("unknown option '$key'")
             }
         }
         return DesyncPlan(fakes = fakes, tcpDesync = tcpDesync)
     }
 
-    private fun unsupported(reason: String) = DesyncPlan(unsupportedReason = reason)
+    /** Needs raw sockets (root): impossible from a normal Android socket. */
+    private fun raw(feature: String) = DesyncPlan(unsupported = Msg("unsup.raw", feature))
+
+    /** Arguments this port cannot parse; details are technical and stay in English. */
+    private fun syntax(detail: String) = DesyncPlan(unsupported = Msg("unsup.syntax", detail))
 
     /** "blob=quic_google", "repeats=6", "badsum" -> map; flags get an empty value. */
     private fun parseParams(items: List<String>): Map<String, String>? {
@@ -119,14 +125,14 @@ object ZapretArgs {
         return FakeStep(blob, repeats, ttl, ttl6)
     }
 
-    private fun fakeProblem(p: Map<String, String>): String {
+    private fun fakeProblem(p: Map<String, String>): Msg {
         val extra = p.keys - fakeKeys
         return when {
-            "badsum" in extra -> "badsum needs raw sockets (root): the kernel always writes a valid UDP checksum"
-            extra.isNotEmpty() -> "fake option(s) ${extra.joinToString()} need raw sockets (root)"
-            p["blob"] == null -> "fake needs blob="
-            Blob.byKey(p["blob"]!!) == null -> "unknown blob '${p["blob"]}'"
-            else -> "bad fake parameters"
+            "badsum" in extra -> Msg("unsup.badsum")
+            extra.isNotEmpty() -> Msg("unsup.raw", "fake:" + extra.joinToString(":"))
+            p["blob"] == null -> Msg("unsup.syntax", "fake needs blob=")
+            Blob.byKey(p["blob"]!!) == null -> Msg("unsup.syntax", "unknown blob '${p["blob"]}'")
+            else -> Msg("unsup.syntax", "bad fake parameters")
         }
     }
 

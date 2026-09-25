@@ -13,6 +13,8 @@ import android.os.ParcelFileDescriptor
 import io.github.feg55.zarp.MainActivity
 import io.github.feg55.zarp.R
 import io.github.feg55.zarp.ZarpApp
+import io.github.feg55.zarp.core.L
+import io.github.feg55.zarp.core.Msg
 import kotlinx.coroutines.CompletableDeferred
 import java.io.File
 
@@ -55,7 +57,8 @@ class ZarpVpnService : VpnService() {
             }
             ACTION_DISCONNECT -> {
                 // "Disconnect" in the notification: the engine closes the tunnel and stops us
-                (application as ZarpApp).engine.disconnect()
+                val engine = (application as ZarpApp).engine
+                if (!engine.disconnect()) engine.cancel()
                 return START_NOT_STICKY
             }
             SERVICE_INTERFACE -> {
@@ -125,7 +128,7 @@ class ZarpVpnService : VpnService() {
     override fun onRevoke() {
         // another VPN took over, or the user turned us off in system settings
         shutdown()
-        (application as ZarpApp).engine.onVpnStopped("VPN turned off by the system")
+        (application as ZarpApp).engine.onVpnStopped(Msg("detail.vpnRevoked"))
     }
 
     override fun onDestroy() {
@@ -136,23 +139,18 @@ class ZarpVpnService : VpnService() {
 
     private fun startForegroundCompat(session: String) {
         val nm = getSystemService(NotificationManager::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL, getString(R.string.vpn_channel), NotificationManager.IMPORTANCE_LOW)
-            )
-        }
+        nm.createNotificationChannel(NotificationChannel(CHANNEL, L.t("notif.channel"), NotificationManager.IMPORTANCE_LOW))
         val open = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE)
         val disconnect = PendingIntent.getService(
             this, 1, Intent(this, ZarpVpnService::class.java).setAction(ACTION_DISCONNECT), PendingIntent.FLAG_IMMUTABLE,
         )
-        @Suppress("DEPRECATION")
-        val b = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) Notification.Builder(this, CHANNEL) else Notification.Builder(this)
-        val n = b.setSmallIcon(R.drawable.ic_stat_zarp)
-            .setContentTitle(getString(R.string.vpn_notification_title))
+        val n = Notification.Builder(this, CHANNEL).setSmallIcon(R.drawable.ic_stat_zarp)
+            .setColor(0xFFF48120.toInt())
+            .setContentTitle(L.t("notif.title"))
             .setContentText(session)
             .setContentIntent(open)
             .setOngoing(true)
-            .addAction(Notification.Action.Builder(null, getString(R.string.disconnect), disconnect).build())
+            .addAction(Notification.Action.Builder(null, L.t("tray.disconnect"), disconnect).build())
             .build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NOTIFICATION_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)

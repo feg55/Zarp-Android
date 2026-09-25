@@ -54,8 +54,8 @@ object StrategyCatalog {
             "--payload=tls_client_hello --lua-desync=multidisorder:pos=1,midsld"),
 
         // ---------- Control: maybe WARP already works on this network ----------
-        Strategy(DIRECT_ID, "Direct (no desync)", Transport.MasqueH3, ""),
-        Strategy(DIRECT_H2_ID, "Direct over HTTP/2 (no desync)", Transport.MasqueH2, ""),
+        Strategy(DIRECT_ID, "Direct (no desync)", Transport.MasqueH3, "", nameKey = "strategy.direct"),
+        Strategy(DIRECT_H2_ID, "Direct over HTTP/2 (no desync)", Transport.MasqueH2, "", nameKey = "strategy.directH2"),
     )
 
     const val DIRECT_ID = "direct"
@@ -81,7 +81,7 @@ object StrategyCatalog {
             val name = parts[0].trim()
             out += Strategy(
                 id = "custom-" + name.lowercase().replace(' ', '-'),
-                name = "★ $name",
+                title = "★ $name",
                 transport = t,
                 args = parts[2].trim(),
                 custom = true,

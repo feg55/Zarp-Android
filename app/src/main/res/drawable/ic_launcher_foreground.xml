@@ -1,11 +1,16 @@
+<!-- Zarp icon: white bolt on the orange circle (desktop Theme.AppImage) -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group android:translateX="30" android:translateY="30">
+    <group
+        android:scaleX="2.1"
+        android:scaleY="2.1"
+        android:translateX="20.4"
+        android:translateY="20.4">
         <path
             android:fillColor="#FFFFFFFF"
-            android:pathData="M26,6h-4v20h4V6zM35.66,10.34l-2.84,2.84C35.98,15.72 38,19.62 38,24c0,7.74 -6.26,14 -14,14s-14,-6.26 -14,-14c0,-4.38 2.02,-8.28 5.16,-10.84L12.34,10.34C8.46,13.64 6,18.52 6,24c0,9.94 8.06,18 18,18s18,-8.06 18,-18c0,-5.48 -2.46,-10.36 -6.34,-13.66z" />
+            android:pathData="M18,5 L9,18 L15,18 L13,27 L23,13 L17,13 Z" />
     </group>
 </vector>

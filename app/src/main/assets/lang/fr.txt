@@ -1,0 +1,159 @@
+# Zarp for Android UI strings: French. Keys match en.txt.
+
+about.text = Zarp pour Android {0}. GPL-3.0.\nWARP via MASQUE : usque, quic-go. TUN : hev-socks5-tunnel. Faux paquets : zapret2.\nCloudflare et WARP sont des marques de Cloudflare, Inc. Zarp n’est pas affilié à Cloudflare.
+
+btn.back = Retour
+btn.cancel = Annuler
+btn.clear = Effacer
+btn.clearResults = Effacer les résultats
+btn.close = Fermer
+btn.copy = Copier
+btn.fullScan = Recherche complète
+btn.newDevice = Nouvel appareil WARP
+btn.quickScan = Recherche rapide
+btn.save = Enregistrer
+btn.test = Tester
+btn.testSelected = Tester la sélection
+btn.use = Utiliser
+
+col.protocol = Protocole
+
+detail.cancelled = Annulé
+detail.connectFailed = Connexion impossible
+detail.connectingTo = Connexion : {0}
+detail.disconnected = Déconnecté
+detail.disconnecting = Déconnexion...
+detail.error = Erreur : {0}
+detail.foundButFailed = Des stratégies ont été trouvées, mais la connexion a échoué
+detail.noStrategy = Aucune stratégie choisie
+detail.notFound = Aucune stratégie fonctionnelle trouvée
+detail.preparing = Préparation...
+detail.rechecking = Nouveau test {0}/{1} : {2}
+detail.reconnecting = Connexion perdue, reconnexion...
+detail.registerFailed = Impossible d’enregistrer WARP
+detail.strategy = Stratégie : {0}
+detail.testing = {0}/{1} : {2}
+detail.vpnFailed = Le VPN n’a pas démarré : {0}
+detail.vpnRevoked = Le VPN a été coupé par le système
+
+err.noTraffic = WARP est connecté, mais le trafic ne passe pas par lui
+err.notWarp = cdn-cgi/trace indique warp={0} : le trafic ne passe pas par WARP
+err.timeout = pas de connexion en {0} s
+err.tos = acceptez d’abord les conditions d’utilisation de Cloudflare WARP
+err.unsupported = non pris en charge sur Android : {0}
+
+hint.cancel = Appuyez sur le bouton pour annuler
+hint.connect = Appuyez pour vous connecter. La stratégie se change dans les paramètres ⚙
+hint.disconnect = Appuyez pour vous déconnecter
+hint.firstRun = Appuyez, et Zarp trouvera la stratégie la plus rapide puis connectera WARP
+
+info.connect = Temps de connexion
+info.endpoint = Point d’accès
+info.ms = {0} ms
+info.ping = Ping
+info.score = Score
+
+lang.system = Langue du système ({0})
+
+log.accountReset = Enregistrement WARP supprimé. Un nouvel appareil sera enregistré à la prochaine connexion.
+log.best = Meilleure stratégie : {0} (connexion {1} ms, ping {2} ms)
+log.cancelled = Opération annulée.
+log.candidatesFailed = Les candidates n’ont pas passé le nouveau test : elles ont sans doute réussi par hasard. Relancez la recherche ou augmentez le délai.
+log.connectingWith = Connexion avec la stratégie : {0}
+log.customSkippedApp = Stratégie personnalisée ignorée (format : Nom | h3/h2 | arguments) : {0}
+log.error = Erreur : {0}
+log.fakes = {0} : {1} faux paquets, {2} octets -> {3}
+log.fakesTtl = {0} : {1} faux paquets, {2} octets, ttl={3} -> {4}
+log.noneWorked = Aucune stratégie n’a fonctionné. Augmentez le délai dans les paramètres ou ajoutez vos propres stratégies.
+log.otherVpnActive = Attention : un autre VPN est actif et le trafic de WARP passe par lui.
+log.recheck = Candidates à retester : {0}
+log.recheckOk = ✔✔ {0} : confirmée (connexion {1} ms, ping {2} ms)
+log.savedFailed = La stratégie enregistrée « {0} » n’a pas fonctionné, essai des autres stratégies vérifiées.
+log.searchFull = Recherche complète : {0} stratégies
+log.searchQuick = Recherche rapide : {0} stratégies, arrêt après {1} valides
+log.searchSelected = Test de la sélection : {0}
+log.started = Zarp démarré : {0}
+log.testFail = ✘ {0} : {1}
+log.testOk = ✔ {0} : connexion {1} ms, ping {2} ms
+log.tryNext = « {0} » ne s’est pas connectée, essai de la suivante.
+log.unsupported = « {0} » n’est pas pris en charge sur Android : {1}
+log.verifiedFailed = Les stratégies vérifiées n’ont pas fonctionné, nouvelle recherche.
+log.vpnAdvice = Désactivez l’autre VPN, sinon WARP risque de ne pas se connecter et la stratégie sera mal choisie.
+log.vpnPermission = L’autorisation VPN n’a pas été accordée.
+log.warpConnected = WARP connecté en {0} ms (ping {1} ms, {2}).
+log.warpNotConnected = WARP ne s’est pas connecté.
+log.warpNotConnectedReason = WARP ne s’est pas connecté : {0}
+log.warpRegisterFailed = Échec de l’enregistrement de WARP : {0}
+log.warpRegistered = WARP enregistré.
+log.warpRegistering = WARP n’est pas enregistré, enregistrement...
+
+main.languageTip = Langue
+main.logHide = Journal ▴
+main.logShow = Journal ▾
+main.settingsTip = Paramètres et stratégie
+main.subtitle = Cloudflare WARP via MASQUE
+
+notif.channel = Connexion VPN
+notif.title = Connecté à WARP
+
+opt.autoConnect = Se connecter au démarrage de Zarp
+opt.deviceOff = Appareil WARP : pas encore enregistré
+opt.deviceOn = Appareil WARP : enregistré
+opt.dns = Serveurs DNS (IP séparées par des virgules)
+opt.ipv6 = IPv6 dans le tunnel
+opt.isolate = Isoler les tests (nouveau point d’accès par test)
+opt.stopAfter = Recherche rapide : nombre\nde stratégies valides
+opt.timeout = Délai de connexion, s
+
+result.applyFailed = échec de connexion à l’application
+result.endpoint = Point d’accès : {0}
+result.notConfirmed = non confirmée : {0}
+result.notTested = non testée
+result.score = Score : {0} (connexion + 4 × ping)
+result.tested = Testé : {0}
+result.times = {0} ms, ping {1} ms
+result.unsupported = non pris en charge sur Android
+result.works1 = fonctionne (1 test)
+result.works2 = fonctionne ✔✔
+
+settings.about = À propos
+settings.caption = Paramètres
+settings.connection = Connexion
+settings.custom = Stratégies personnalisées
+settings.data = Données
+settings.explain = Touchez une stratégie pour vous connecter avec elle ou la tester. ✔✔ validée par deux tests indépendants.
+settings.options = Options
+settings.scanning = Recherche
+settings.strategy = Stratégie
+
+status.connected = Connecté
+status.connecting = Connexion...
+status.disconnected = Déconnecté
+status.disconnecting = Déconnexion...
+status.error = Erreur
+status.preparing = Préparation...
+status.searching = Recherche de stratégie
+
+strategy.direct = Direct (sans contournement)
+strategy.directH2 = Direct via HTTP/2 (sans contournement)
+
+tab.home = Accueil
+tab.log = Journal
+tab.settings = Paramètres
+tab.strategies = Stratégies
+
+tip.fullScan = Teste les {0} stratégies. Plus long, mais rien n’est ignoré
+tip.quickScan = S’arrête après {0} stratégies valides (réglable dans les options)
+
+tos.accept = Accepter
+tos.text = Zarp enregistre un appareil Cloudflare WARP gratuit et s’y connecte via MASQUE. En continuant, vous acceptez les conditions d’utilisation de Cloudflare WARP :\nhttps://www.cloudflare.com/application/terms/\n\nZarp est un projet indépendant, sans lien avec Cloudflare.
+tos.title = Cloudflare WARP
+
+tray.cancel = Annuler
+tray.connect = Connecter
+tray.disconnect = Déconnecter
+
+unsup.badsum = badsum nécessite des sockets raw (root) : le noyau écrit toujours une somme de contrôle UDP valide
+unsup.raw = {0} nécessite des sockets raw (root)
+unsup.syntax = arguments inutilisables : {0}
+unsup.wireguard = WireGuard n’est pas encore disponible sur Android

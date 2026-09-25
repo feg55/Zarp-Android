@@ -11,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import io.github.feg55.zarp.core.L
 import io.github.feg55.zarp.ui.MainViewModel
 import io.github.feg55.zarp.ui.ZarpRoot
 import io.github.feg55.zarp.ui.ZarpTheme
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
         if (VpnService.prepare(this) == null) {
             action?.invoke()
         } else {
-            vm.log.write("VPN permission was not granted.")
+            vm.log.write(L.t("log.vpnPermission"))
         }
     }
 

@@ -1,22 +1,26 @@
 package io.github.feg55.zarp.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,11 +34,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.feg55.zarp.core.L
 import io.github.feg55.zarp.core.Strategy
 import io.github.feg55.zarp.core.TestResult
 import java.text.DateFormat
 import java.util.Date
+import java.util.Locale
 
 @Composable
 fun StrategiesScreen(vm: MainViewModel, guarded: (() -> Unit) -> Unit, modifier: Modifier = Modifier) {
@@ -48,9 +55,12 @@ fun StrategiesScreen(vm: MainViewModel, guarded: (() -> Unit) -> Unit, modifier:
 
     Box(modifier.fillMaxSize()) {
         LazyColumn(
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(12.dp, 12.dp, 12.dp, 96.dp),
+            contentPadding = PaddingValues(12.dp, 12.dp, 12.dp, 96.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            item {
+                Text(L.t("settings.explain"), color = Zc.TextDim, fontSize = 13.sp, modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp))
+            }
             items(strategies, key = { it.id }) { s ->
                 StrategyRow(
                     s = s,
@@ -65,47 +75,20 @@ fun StrategiesScreen(vm: MainViewModel, guarded: (() -> Unit) -> Unit, modifier:
         if (checked.isNotEmpty()) {
             ExtendedFloatingActionButton(
                 onClick = {
-                    val list = strategies.filter { it.id in checked }
-                    guarded { vm.test(list) }
-                    checked = emptySet()
+                    if (!busy) {
+                        val list = strategies.filter { it.id in checked }
+                        guarded { vm.test(list) }
+                        checked = emptySet()
+                    }
                 },
+                containerColor = if (busy) Zc.Panel else Zc.Accent,
+                contentColor = if (busy) Zc.TextDim else Zc.OnAccent,
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            ) { Text(if (busy) "Busy..." else "Test selected (${checked.size})") }
+            ) { Text(L.t("btn.testSelected") + " (${checked.size})", fontWeight = FontWeight.SemiBold) }
         }
     }
 
-    details?.let { s ->
-        val r = results[s.id]
-        AlertDialog(
-            onDismissRequest = { details = null },
-            title = { Text(s.name) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(s.transport.title, style = MaterialTheme.typography.labelLarge)
-                    Text(s.args.ifBlank { "(no desync)" }, fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
-                    s.plan.unsupportedReason?.let { Text("Unsupported on Android: $it", color = MaterialTheme.colorScheme.error) }
-                    if (r != null) {
-                        Text(resultLine(r))
-                        if (r.ok) Text("Score: ${r.score} (connect + 4 × ping)")
-                        r.endpoint?.let { Text("Endpoint: $it") }
-                        if (r.timestamp > 0) Text("Tested: " + DateFormat.getDateTimeInstance().format(Date(r.timestamp)))
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(enabled = !busy && s.supported, onClick = {
-                    details = null
-                    guarded { vm.use(s) }
-                }) { Text("Connect") }
-            },
-            dismissButton = {
-                TextButton(enabled = !busy && s.supported, onClick = {
-                    details = null
-                    guarded { vm.test(listOf(s)) }
-                }) { Text("Test") }
-            },
-        )
-    }
+    details?.let { s -> StrategyDialog(s, results[s.id], busy, guarded, vm) { details = null } }
 }
 
 @Composable
@@ -117,34 +100,99 @@ private fun StrategyRow(
     onCheck: (Boolean) -> Unit,
     onClick: () -> Unit,
 ) {
-    val colors = if (current) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-    else CardDefaults.cardColors()
-    Card(colors = colors, modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = if (current) Zc.PanelHover else Zc.Panel),
+        border = BorderStroke(1.dp, if (current) Zc.Accent else Zc.Border),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+    ) {
         Row(Modifier.padding(start = 4.dp, end = 12.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = checked, onCheckedChange = onCheck, enabled = s.supported)
+            Checkbox(
+                checked = checked,
+                onCheckedChange = onCheck,
+                enabled = s.supported,
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Zc.Accent,
+                    uncheckedColor = Zc.TextDim,
+                    checkmarkColor = Zc.OnAccent,
+                    disabledUncheckedColor = Zc.TextDisabled,
+                ),
+            )
             Column(Modifier.weight(1f)) {
-                Text((if (current) "● " else "") + s.name, fontWeight = FontWeight.Medium)
+                Text(
+                    (if (current) "✔ " else "") + s.name,
+                    color = if (s.supported) Zc.Text else Zc.TextDim,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    AssistChip(onClick = onClick, label = { Text(s.transport.shortName.uppercase()) })
-                    val (text, color) = when {
-                        !s.supported -> "unsupported" to MaterialTheme.colorScheme.outline
-                        r == null -> "not tested" to MaterialTheme.colorScheme.outline
-                        else -> resultLine(r) to when {
-                            r.ok && r.confirmed -> Color(0xFF2E7D32)
-                            r.ok -> Color(0xFFF9A825)
-                            else -> MaterialTheme.colorScheme.error
-                        }
-                    }
-                    Text(text, color = color, style = MaterialTheme.typography.bodySmall, maxLines = 2)
+                    AssistChip(
+                        onClick = onClick,
+                        label = { Text(s.transport.shortName.uppercase(), fontSize = 12.sp) },
+                        colors = AssistChipDefaults.assistChipColors(labelColor = Zc.TextDim),
+                        border = BorderStroke(1.dp, Zc.Border),
+                    )
+                    val (text, color) = resultLabel(s, r)
+                    Text(text, color = color, fontSize = 13.sp, maxLines = 2)
                 }
             }
         }
     }
 }
 
-fun resultLine(r: TestResult): String = when {
-    r.unsupported -> r.error.orEmpty()
-    r.ok && r.confirmed -> "works ✔✔  ${r.connectMs} ms / ping ${r.pingMs} ms"
-    r.ok -> "works (1 check)  ${r.connectMs} ms / ping ${r.pingMs} ms"
-    else -> "✘ " + r.displayError
+/** Result text and color: green for ✔✔, orange for a single check, red for a failure. */
+fun resultLabel(s: Strategy, r: TestResult?): Pair<String, Color> = when {
+    !s.supported -> L.t("result.unsupported") to Zc.TextDisabled
+    r == null -> L.t("result.notTested") to Zc.TextDim
+    r.ok && r.confirmed -> (L.t("result.works2") + "  " + L.t("result.times", r.connectMs, r.pingMs)) to Zc.Ok
+    r.ok -> (L.t("result.works1") + "  " + L.t("result.times", r.connectMs, r.pingMs)) to Zc.Accent
+    else -> ("✘ " + r.displayError) to Zc.Bad
+}
+
+@Composable
+private fun StrategyDialog(
+    s: Strategy,
+    r: TestResult?,
+    busy: Boolean,
+    guarded: (() -> Unit) -> Unit,
+    vm: MainViewModel,
+    close: () -> Unit,
+) {
+    val language by L.current.collectAsStateWithLifecycle()
+    val usable = !busy && s.supported
+    AlertDialog(
+        onDismissRequest = close,
+        containerColor = Zc.Panel,
+        titleContentColor = Zc.Text,
+        textContentColor = Zc.Text,
+        title = { Text(s.name, fontSize = 19.sp) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(s.transport.title, color = Zc.TextDim, fontSize = 13.sp)
+                Text(s.args.ifBlank { "-" }, fontFamily = FontFamily.Monospace, fontSize = 12.sp, color = Zc.TextDim)
+                s.plan.unsupportedReason?.let { Text(L.t("err.unsupported", it), color = Zc.Bad, fontSize = 14.sp) }
+                if (r != null && s.supported) {
+                    val (text, color) = resultLabel(s, r)
+                    Text(text, color = color, fontSize = 14.sp)
+                    if (r.ok) Text(L.t("result.score", r.score), fontSize = 14.sp)
+                    r.endpoint?.let { Text(L.t("result.endpoint", it), fontSize = 14.sp, color = Zc.TextDim) }
+                    if (r.timestamp > 0) {
+                        val time = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.forLanguageTag(language))
+                            .format(Date(r.timestamp))
+                        Text(L.t("result.tested", time), fontSize = 13.sp, color = Zc.TextDim)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(enabled = usable, onClick = { close(); guarded { vm.use(s) } }) {
+                Text(L.t("btn.use"), color = if (usable) Zc.Accent else Zc.TextDisabled)
+            }
+        },
+        dismissButton = {
+            TextButton(enabled = usable, onClick = { close(); guarded { vm.test(listOf(s)) } }) {
+                Text(L.t("btn.test"), color = if (usable) Zc.Text else Zc.TextDisabled)
+            }
+        },
+    )
 }

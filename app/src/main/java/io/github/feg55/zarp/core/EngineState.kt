@@ -15,7 +15,7 @@ enum class EngineState {
 /** Everything the UI shows about the engine. */
 data class EngineStatus(
     val state: EngineState = EngineState.Idle,
-    val detail: String = "",
+    val detail: Msg = Msg("detail.noStrategy"),
     val progressDone: Int = 0,
     val progressTotal: Int = 0,
     /** Strategy being tested or the one the tunnel runs with. */

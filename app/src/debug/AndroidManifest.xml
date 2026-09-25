@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Debug builds only: drive the engine from adb, e.g.
-     adb shell am broadcast -a io.github.feg55.zarp.DEBUG -n io.github.feg55.zarp/.DebugCommandReceiver -\-es cmd "test warp-q-google6"
+     adb shell am broadcast -a io.github.feg55.zarp.DEBUG -n io.github.feg55.zarp.debug/io.github.feg55.zarp.DebugCommandReceiver -\-es cmd "test warp-q-google6"
      Commands: quick | full | connect | disconnect | cancel | test <id,id,...> | use <id> -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>

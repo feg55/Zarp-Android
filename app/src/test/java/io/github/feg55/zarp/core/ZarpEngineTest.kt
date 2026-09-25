@@ -9,6 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 /**
@@ -96,6 +97,9 @@ class ZarpEngineTest {
 
     private val ids = StrategyCatalog.builtIn.map { it.id }
 
+    @Before
+    fun setUp() = TestLang.english()
+
     @Test
     fun `quick scan stops after N working, rechecks them and connects with the best`() = runTest {
         val env = Env(
@@ -177,7 +181,8 @@ class ZarpEngineTest {
         advanceUntilIdle()
         val r = env.engine.results.value.getValue("direct")
         assertFalse(r.ok)
-        assertTrue(r.error!!.contains("warp=off"))
+        assertEquals("err.notWarp", r.errorKey)
+        assertTrue(r.displayError.contains("warp=off"))
     }
 
     @Test
@@ -227,7 +232,7 @@ class ZarpEngineTest {
         assertEquals(listOf("warp-q-vk6", "warp-q-google3", "warp-q-google6"), env.opened.map { it.strategyId })
         assertEquals("warp-q-google6", env.store.selected)
         assertFalse(env.engine.results.value.getValue("warp-q-vk6").ok)
-        assertEquals("failed to connect when applied", env.engine.results.value.getValue("warp-q-vk6").error)
+        assertEquals("failed to connect when applied", env.engine.results.value.getValue("warp-q-vk6").displayError)
         assertEquals(EngineState.Connected, env.engine.status.value.state)
     }
 

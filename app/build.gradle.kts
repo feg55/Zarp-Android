@@ -49,7 +49,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            // installs next to the release build instead of replacing it
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "Zarp debug")
+        }
         release {
+            resValue("string", "app_name", "Zarp")
             // without the variables the release APK stays unsigned
             signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
@@ -66,6 +72,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
 
     testOptions {

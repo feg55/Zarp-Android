@@ -31,17 +31,22 @@ enum class Transport(val title: String, val shortName: String) {
  */
 data class Strategy(
     val id: String,
-    val name: String,
+    /** Technical names are the same in every language, as in Zarp. */
+    val title: String,
     val transport: Transport,
     val args: String,
     val custom: Boolean = false,
+    /** Translation key for names that are translated (the direct strategies). */
+    val nameKey: String? = null,
 ) {
+    val name: String get() = nameKey?.let { L.t(it) } ?: title
+
     val usesDesync: Boolean get() = args.isNotBlank()
 
     /** Parsed once; unsupported parts are reported, never silently dropped. */
     val plan: DesyncPlan by lazy { ZapretArgs.parse(transport, args) }
 
-    val supported: Boolean get() = plan.unsupportedReason == null
+    val supported: Boolean get() = plan.unsupported == null
 
     override fun toString(): String = name
 }

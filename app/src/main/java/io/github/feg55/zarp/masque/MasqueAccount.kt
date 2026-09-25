@@ -1,6 +1,9 @@
 package io.github.feg55.zarp.masque
 
 import io.github.feg55.zarp.core.AppSettings
+import io.github.feg55.zarp.core.L
+import io.github.feg55.zarp.core.Msg
+import io.github.feg55.zarp.core.ZarpException
 import io.github.feg55.zarp.core.LogBus
 import io.github.feg55.zarp.core.WarpAccount
 import io.github.feg55.zarpcore.Zarpcore
@@ -19,11 +22,11 @@ class MasqueAccount(
 
     override suspend fun ensureRegistered() {
         if (registered) return
-        if (!settings().tosAccepted) throw IllegalStateException("accept the Cloudflare WARP Terms of Service first")
+        if (!settings().tosAccepted) throw ZarpException(Msg("err.tos"))
         withContext(Dispatchers.IO) {
             Zarpcore.register(configFile.absolutePath, "Zarp Android")
         }
-        log.write("WARP registered.")
+        log.write(L.t("log.warpRegistered"))
     }
 
     /** Drops the registration; the next operation registers a new device. */

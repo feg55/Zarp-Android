@@ -2,9 +2,12 @@ package io.github.feg55.zarp
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import androidx.core.content.edit
+import io.github.feg55.zarp.core.L
 import io.github.feg55.zarp.core.LogBus
 import io.github.feg55.zarp.core.NetworkInspector
 import io.github.feg55.zarp.core.ZarpEngine
@@ -22,6 +25,10 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 class ZarpApp : Application() {
+    companion object {
+        private const val KEY_LANGUAGE = "language"
+    }
+
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val log = LogBus { Log.i("Zarp", it) }
     lateinit var store: DataStoreZarpStore
@@ -31,8 +38,22 @@ class ZarpApp : Application() {
     lateinit var engine: ZarpEngine
         private set
 
+    private val uiPrefs by lazy { getSharedPreferences("ui", MODE_PRIVATE) }
+
+    /** Globe button: null follows the system language. */
+    fun setLanguage(code: String?) {
+        L.setLanguage(code)
+        uiPrefs.edit { if (code == null) remove(KEY_LANGUAGE) else putString(KEY_LANGUAGE, code) }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        L.onSystemLocaleChanged(newConfig.locales[0])
+    }
+
     override fun onCreate() {
         super.onCreate()
+        L.init(open = { assets.open(it) }, setting = uiPrefs.getString(KEY_LANGUAGE, null))
         store = DataStoreZarpStore(this)
         Zarpcore.setLogger { line -> log.write("core: $line") }
 
@@ -50,7 +71,7 @@ class ZarpApp : Application() {
             network = AndroidNetworkInspector(this),
             log = log,
         )
-        log.write("Zarp ${BuildConfig.VERSION_NAME} started")
+        log.write(L.t("log.started", BuildConfig.VERSION_NAME))
         appScope.launch { engine.load() }
     }
 }
