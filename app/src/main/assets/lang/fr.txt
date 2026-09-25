@@ -51,7 +51,6 @@ info.connect = Temps de connexion
 info.endpoint = Point d’accès
 info.ms = {0} ms
 info.ping = Ping
-info.score = Score
 
 lang.system = Langue du système ({0})
 
@@ -109,7 +108,6 @@ result.applyFailed = échec de connexion à l’application
 result.endpoint = Point d’accès : {0}
 result.notConfirmed = non confirmée : {0}
 result.notTested = non testée
-result.score = Score : {0} (connexion + 4 × ping)
 result.tested = Testé : {0}
 result.times = {0} ms, ping {1} ms
 result.unsupported = non pris en charge sur Android

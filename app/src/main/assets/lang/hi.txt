@@ -51,7 +51,6 @@ info.connect = कनेक्शन समय
 info.endpoint = एंडपॉइंट
 info.ms = {0} ms
 info.ping = पिंग
-info.score = स्कोर
 
 lang.system = सिस्टम की भाषा ({0})
 
@@ -109,7 +108,6 @@ result.applyFailed = लागू करने पर कनेक्ट नह�
 result.endpoint = एंडपॉइंट: {0}
 result.notConfirmed = पुष्टि नहीं हुई: {0}
 result.notTested = जाँची नहीं गई
-result.score = स्कोर: {0} (कनेक्शन + 4 × पिंग)
 result.tested = जाँचा गया: {0}
 result.times = {0} ms, पिंग {1} ms
 result.unsupported = Android पर समर्थित नहीं

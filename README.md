@@ -6,7 +6,7 @@
 
 One-tap Cloudflare WARP for networks that block it. Android version of [Zarp](https://github.com/feg55/Zarp): it finds a strategy that gets the WARP handshake through DPI, checks it twice, remembers it and connects.
 
-<img src="docs/screenshot.png" alt="Zarp for Android" width="300">
+![Zarp for Android: home, strategies and settings](docs/screenshots.png)
 
 ## Features
 

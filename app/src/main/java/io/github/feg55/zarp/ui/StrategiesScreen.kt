@@ -174,7 +174,6 @@ private fun StrategyDialog(
                 if (r != null && s.supported) {
                     val (text, color) = resultLabel(s, r)
                     Text(text, color = color, fontSize = 14.sp)
-                    if (r.ok) Text(L.t("result.score", r.score), fontSize = 14.sp)
                     r.endpoint?.let { Text(L.t("result.endpoint", it), fontSize = 14.sp, color = Zc.TextDim) }
                     if (r.timestamp > 0) {
                         val time = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.forLanguageTag(language))

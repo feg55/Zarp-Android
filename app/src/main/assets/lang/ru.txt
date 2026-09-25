@@ -51,7 +51,6 @@ info.connect = Время подключения
 info.endpoint = Эндпоинт
 info.ms = {0} мс
 info.ping = Пинг
-info.score = Оценка
 
 lang.system = Как в системе ({0})
 
@@ -109,7 +108,6 @@ result.applyFailed = не подключилась при применении
 result.endpoint = Эндпоинт: {0}
 result.notConfirmed = не подтвердилась: {0}
 result.notTested = не проверялась
-result.score = Оценка: {0} (подключение + 4 × пинг)
 result.tested = Проверено: {0}
 result.times = {0} мс, пинг {1} мс
 result.unsupported = не поддерживается на Android

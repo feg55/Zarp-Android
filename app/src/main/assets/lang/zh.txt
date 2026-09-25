@@ -51,7 +51,6 @@ info.connect = 连接时间
 info.endpoint = 端点
 info.ms = {0} 毫秒
 info.ping = 延迟
-info.score = 评分
 
 lang.system = 跟随系统（{0}）
 
@@ -109,7 +108,6 @@ result.applyFailed = 应用时连接失败
 result.endpoint = 端点：{0}
 result.notConfirmed = 未确认：{0}
 result.notTested = 未检测
-result.score = 评分：{0}（连接 + 4 × 延迟）
 result.tested = 检测时间：{0}
 result.times = {0} 毫秒，延迟 {1} 毫秒
 result.unsupported = Android 上不支持
