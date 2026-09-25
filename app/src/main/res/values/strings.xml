@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zarp</string>
+    <string name="vpn_channel">VPN connection</string>
+    <string name="vpn_notification_title">Zarp: connected to WARP</string>
+    <string name="disconnect">Disconnect</string>
+</resources>

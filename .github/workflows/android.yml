@@ -1,0 +1,60 @@
+name: Android
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: core/go.mod
+          cache-dependency-path: core/go.sum
+
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools platforms;android-37.0 build-tools;36.1.0 ndk;29.0.14206865
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Go core - vet and test
+        working-directory: core
+        run: |
+          test -z "$(gofmt -l zarpcore third_party/usque/pub)"
+          go vet ./zarpcore
+          go test ./zarpcore
+
+      - name: Unit tests
+        run: ./gradlew test --console=plain
+
+      - name: Lint
+        run: ./gradlew lint --console=plain
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --console=plain
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: zarp-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: reports
+          path: |
+            app/build/reports/
+            app/build/test-results/
